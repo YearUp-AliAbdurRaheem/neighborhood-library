@@ -23,7 +23,7 @@ public class Main {
                     char bookScreenOption = AvailableBookScreen(); // next screen
                     switch (bookScreenOption) {
                         case 'C':
-                            CheckOutScreen(true); // The true means your checking OUT a book
+                            CheckBookScreen(true); // The true means your checking OUT a book
                             continue;
                         case 'X':
                             continue;
@@ -35,7 +35,7 @@ public class Main {
                     char UNBookScreenOption = UnAvailableBookScreen();
                     switch (UNBookScreenOption) {
                         case 'C':
-                            CheckOutScreen(false); // The false means your checking IN a book
+                            CheckBookScreen(false); // The false means your checking IN a book
                             continue;
                         case 'X':
                             continue;
@@ -65,7 +65,7 @@ public class Main {
                     return 'A';
                 case "C":
                     return 'C';
-                case "X", "EXIT", "Q", "QUIT":
+                case "X", "EXIT", "E", "Q", "QUIT":
                     return 'X';
                 default:
                     System.out.println("command not found: " + command.toUpperCase());
@@ -115,7 +115,7 @@ public class Main {
         }  while (true);
     }
 
-    public static void CheckOutScreen(boolean out) {
+    public static void CheckBookScreen(boolean out) {
         do {
             byte bookID = Console.PromptForByte("Enter Book ID: "); // get id from user
             if (bookID == 0 //check if id is valid
