@@ -1,5 +1,7 @@
 package com.pluralsight;
 
+import java.util.Arrays;
+
 public class Main {
 
     public static Book[] Library;
@@ -7,14 +9,47 @@ public class Main {
     public static void main(String[] args) {
         Library = getInitializedLibrary();
 
-        char option = PromptMainChoices();
-        switch (option) {
-            case 'A':
+        // Main Loop
+        do {
+            // Updates filtered arrays
+            Book[] bookByAvailability = Arrays.stream(Library).filter(book -> !book.isCheckedOut()).toArray(Book[]::new);
+            Book[] bookByCheckedOut = Arrays.stream(Library).filter(Book::isCheckedOut).toArray(Book[]::new);
+            // Main Screen
+            char option = MainScreen();
+            switch (option) {
+                case 'A':
+                    // Take all Books where Book.getCheckoutOutTo == true
+                    DisplayBooks(bookByAvailability);
+                    char bookScreenOption = AvailableBookScreen(); // next screen
+                    switch (bookScreenOption) {
+                        case 'C':
+                            CheckOutScreen(true); // The true means your checking OUT a book
+                            continue;
+                        case 'X':
+                            continue;
+                    }
 
-        }
+                case 'C':
+                    DisplayBooks(bookByCheckedOut);
+                    if (bookByCheckedOut.length == 0) {continue;} // If there are no checked out books dont show the checkin screen
+                    char UNBookScreenOption = UnAvailableBookScreen();
+                    switch (UNBookScreenOption) {
+                        case 'C':
+                            CheckOutScreen(false); // The false means your checking IN a book
+                            continue;
+                        case 'X':
+                            continue;
+                    }
+
+                case 'X':
+                    return;
+
+
+            }
+        } while (true);
     }
 
-    public static char PromptMainChoices(){
+    public static char MainScreen() {
         System.out.println("Welcome to the Library!  Please select from the following choices:");
         System.out.println("    Show [A]vailable Books");
         System.out.println("    Show [C]hecked Out Books");
@@ -30,10 +65,7 @@ public class Main {
                     return 'A';
                 case "C":
                     return 'C';
-                case "X":
-                case "EXIT":
-                case "Q":
-                case "QUIT":
+                case "X", "EXIT", "Q", "QUIT":
                     return 'X';
                 default:
                     System.out.println("command not found: " + command.toUpperCase());
@@ -41,6 +73,67 @@ public class Main {
         }  while (true);
 
 
+    }
+
+
+    public static char AvailableBookScreen() {
+        System.out.println("    [C]heckOut a Book");
+        System.out.println("    E[X]it to Main Screen");
+
+        do{
+
+            System.out.print("Command [C, X]: ");
+            String command = Console.PromptForString();
+
+            switch (command.toUpperCase()) {
+                case "C":
+                    return 'C';
+                case "X", "EXIT", "Q", "QUIT":
+                    return 'X';
+                default:
+                    System.out.println("command not found: " + command.toUpperCase());
+            }
+        }  while (true);
+    }
+    public static char UnAvailableBookScreen() {
+        System.out.println("    [C]heckIN a Book");
+        System.out.println("    E[X]it to Main Screen");
+
+        do{
+
+            System.out.print("Command [C, X]: ");
+            String command = Console.PromptForString();
+
+            switch (command.toUpperCase()) {
+                case "C":
+                    return 'C';
+                case "X", "EXIT", "Q", "QUIT":
+                    return 'X';
+                default:
+                    System.out.println("command not found: " + command.toUpperCase());
+            }
+        }  while (true);
+    }
+
+    public static void CheckOutScreen(boolean out) {
+        do {
+            byte bookID = Console.PromptForByte("Enter Book ID: "); // get id from user
+            if (bookID == 0 //check if id is valid
+                    || bookID > Library.length
+                    || (out ? Library[bookID -1].isCheckedOut() : ! Library[bookID -1].isCheckedOut())) { // the check is diferent weather the user is checking in or out a book, hence the turnery operator
+                System.out.println("Invalid ID");
+                continue;
+            }
+            if (out) {
+                Console.scanner.nextLine();
+                String name = Console.PromptForString("Enter your name: ");
+                Library[bookID -1].checkOut(name);
+                return;
+            }
+            Console.scanner.nextLine();
+            Library[bookID -1].checkIn();
+            return;
+        } while (true);
     }
 
 
@@ -52,6 +145,7 @@ public class Main {
             System.out.printf("%5s %55s %20s %24s\n", book.getId(), book.getTitle(), book.getIsbn(), book.getCheckoutOutTo());
         }
     }
+
 
 
     public static Book[] getInitializedLibrary() {
