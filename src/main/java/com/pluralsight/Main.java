@@ -88,7 +88,7 @@ public class Main {
             switch (command.toUpperCase()) {
                 case "C":
                     return 'C';
-                case "X", "EXIT", "Q", "QUIT":
+                case "X", "EXIT", "E", "Q", "QUIT":
                     return 'X';
                 default:
                     System.out.println("command not found: " + command.toUpperCase());
@@ -107,7 +107,7 @@ public class Main {
             switch (command.toUpperCase()) {
                 case "C":
                     return 'C';
-                case "X", "EXIT", "Q", "QUIT":
+                case "X", "EXIT", "E", "Q", "QUIT":
                     return 'X';
                 default:
                     System.out.println("command not found: " + command.toUpperCase());
